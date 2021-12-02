@@ -170,6 +170,23 @@ public class SaveListItem : PanelContainer
 
         isBroken = save.Info.Type == SaveInformation.SaveType.Invalid;
 
+        if (save.Screenshot != null)
+        {
+            // Rescale the screenshot to save memory etc.
+            float aspectRatio = save.Screenshot.GetWidth() / (float)save.Screenshot.GetHeight();
+
+            if (save.Screenshot.GetHeight() > Constants.SAVE_LIST_SCREENSHOT_HEIGHT)
+            {
+                // TODO: this seems like a Godot bug, the game crashes often when loading the saves list without
+                // this lock. See: https://github.com/godotengine/godot/issues/55528
+                lock (ResourceLoading.ImageLoadingLock)
+                {
+                    save.Screenshot.Resize((int)(Constants.SAVE_LIST_SCREENSHOT_HEIGHT * aspectRatio),
+                        Constants.SAVE_LIST_SCREENSHOT_HEIGHT);
+                }
+            }
+        }
+
         // Screenshot (if present, saves can have a missing screenshot)
         if (save.Screenshot != null)
         {
@@ -275,23 +292,6 @@ public class SaveListItem : PanelContainer
         saveInfoLoadTask = new Task<Save>(() =>
         {
             var save = Save.LoadInfoAndScreenshotFromSave(saveName);
-
-            if (save.Screenshot != null)
-            {
-                // Rescale the screenshot to save memory etc.
-                float aspectRatio = save.Screenshot.GetWidth() / (float)save.Screenshot.GetHeight();
-
-                if (save.Screenshot.GetHeight() > Constants.SAVE_LIST_SCREENSHOT_HEIGHT)
-                {
-                    // TODO: this seems like a Godot bug, the game crashes often when loading the saves list without
-                    // this lock. See: https://github.com/godotengine/godot/issues/55528
-                    lock (ResourceLoading.ImageLoadingLock)
-                    {
-                        save.Screenshot.Resize((int)(Constants.SAVE_LIST_SCREENSHOT_HEIGHT * aspectRatio),
-                            Constants.SAVE_LIST_SCREENSHOT_HEIGHT);
-                    }
-                }
-            }
 
             return save;
         });
