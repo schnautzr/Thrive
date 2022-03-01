@@ -568,8 +568,6 @@ public partial class Microbe : RigidBody, ISpawned, IProcessable, IMicrobeAI, IS
 
     public void AIThink(float delta, Random random, MicrobeAICommonData data)
     {
-        if (IsPlayerMicrobe)
-            throw new InvalidOperationException("AI can't run on the player microbe");
 
         if (Dead)
             return;
