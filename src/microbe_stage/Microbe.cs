@@ -79,7 +79,7 @@ public partial class Microbe : RigidBody, ISpawned, IProcessable, IMicrobeAI, IS
     ///    True when this is the player's microbe
     /// </summary>
     [JsonProperty]
-    public bool IsPlayerMicrobe { get; private set; }
+    public bool IsPlayerMicrobe { get; set; }
 
     [JsonIgnore]
     public bool IsHoveredOver { get; set; }
