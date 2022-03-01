@@ -40,7 +40,7 @@ public class PlayerMicrobeInput : NodeWithInput
         _ = delta;
         const float epsilon = 0.01f;
 
-        // Reset auto move if a key was pressed
+        /*// Reset auto move if a key was pressed
         if (Math.Abs(forwardMovement) + Math.Abs(leftRightMovement) > epsilon)
         {
             autoMove = false;
@@ -59,7 +59,7 @@ public class PlayerMicrobeInput : NodeWithInput
             stage.Player.MovementDirection = autoMove ? new Vector3(0, 0, -1) : movement.Normalized();
 
             stage.Player.LookAtPoint = stage.Camera.CursorWorldPos;
-        }
+        }*/
     }
 
     [RunOnKeyDown("g_fire_toxin")]
