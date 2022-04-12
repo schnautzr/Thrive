@@ -284,7 +284,7 @@ public class MicrobeAI
                 continue;
 
             if (microbe.EngulfSize > chunk.Size * Constants.ENGULF_SIZE_RATIO_REQ
-                && (chunk.Translation - microbe.Translation).LengthSquared()
+                && DistanceFromMe(chunk.Translation)
                 <= (20000.0 * SpeciesFocus / Constants.MAX_SPECIES_FOCUS) + 1500.0)
             {
                 if (chunk.ContainedCompounds.Compounds.Any(x => microbe.Compounds.IsUseful(x.Key)))
@@ -814,7 +814,16 @@ public class MicrobeAI
 
     private float DistanceFromMe(Vector3 target)
     {
-        return (target - microbe.Translation).LengthSquared();
+        if (microbe.ColonyParent != null)
+        {
+            return (target -
+                (microbe.Translation + microbe.ColonyParent.Translation))
+                .LengthSquared();
+        }
+        else
+        {
+            return (target - microbe.Translation).LengthSquared();
+        }
     }
 
     private bool RollCheck(float ourStat, float dc, Random random)
