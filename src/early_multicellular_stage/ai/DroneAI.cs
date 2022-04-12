@@ -21,7 +21,7 @@ public class DroneAI
 
         if (prey != null)
         {
-            behavior.FireToxinAt = prey.GlobalTransform.origin;
+            behavior.FireToxinAt = prey.GlobalTransform.origin - microbe.GlobalTransform.origin;
         }
 
         return behavior;
