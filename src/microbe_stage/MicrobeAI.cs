@@ -110,7 +110,10 @@ public class MicrobeAI
             isDrone = true;
 
         if (isDrone)
+        {
+            DroneBehavior(random, data);
             return;
+        }
 
         timeSinceSignalSniffing += delta;
 
@@ -637,6 +640,22 @@ public class MicrobeAI
             {
                 MoveWithRandomTurn(0.0f, 1.5f, random);
             }
+        }
+    }
+
+    /// <summary>
+    ///   Used for cells that are in a colony, but not leading it.
+    /// </summary>
+    private void DroneBehavior(Random random, MicrobeAICommonData data)
+    {
+        Vector3? targetChunk = GetNearestChunkItem(data.AllChunks, data.AllMicrobes, random)?.Translation;
+        if (targetChunk.HasValue && DistanceFromMe(targetChunk.Value) < microbe.Radius * 1.2)
+        {
+            microbe.State = Microbe.MicrobeState.Engulf;
+        }
+        else
+        {
+            microbe.State = Microbe.MicrobeState.Normal;
         }
     }
 
