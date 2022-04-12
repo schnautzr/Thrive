@@ -817,9 +817,7 @@ public class MicrobeAI
     {
         if (microbe.ColonyParent != null)
         {
-            return (target -
-                (microbe.Translation + microbe.ColonyParent.Translation))
-                .LengthSquared();
+            return (target - microbe.GlobalTransform.origin).LengthSquared();
         }
         else
         {
