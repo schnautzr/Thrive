@@ -651,6 +651,11 @@ public class MicrobeAI
         var behavior = DroneAI.DroneBehavior(microbe, random, data);
 
         microbe.State = behavior.State;
+
+        if (behavior.FireToxin)
+        {
+            microbe.QueueEmitToxin(oxytoxy);
+        }
     }
 
     /// <summary>

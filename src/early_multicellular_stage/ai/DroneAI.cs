@@ -17,6 +17,8 @@ public class DroneAI
             behavior.State = Microbe.MicrobeState.Normal;
         }
 
+        behavior.FireToxin = true;
+
         return behavior;
     }
 

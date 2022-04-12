@@ -202,7 +202,7 @@ public partial class Microbe
         // Find the direction the microbe is facing
         var direction = (LookAtPoint - Translation).Normalized();
 
-        var position = Translation + (direction * ejectionDistance);
+        var position = GlobalTransform.origin + (direction * ejectionDistance);
 
         var agent = SpawnHelpers.SpawnAgent(props, amountEmitted, Constants.EMITTED_AGENT_LIFETIME,
             position, direction, GetStageAsParent(),
