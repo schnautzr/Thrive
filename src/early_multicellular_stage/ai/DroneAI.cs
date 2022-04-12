@@ -46,7 +46,7 @@ public class DroneAI
         Microbe? prey = null;
         foreach (var otherMicrobe in data.AllMicrobes)
         {
-            if (!otherMicrobe.Dead)
+            if (otherMicrobe.Species != microbe.Species && !otherMicrobe.Dead)
             {
                 if (DistanceFromMe(microbe, otherMicrobe.GlobalTransform.origin) <
                     (250.0f * microbe.Species.Behaviour.Aggression / Constants.MAX_SPECIES_AGGRESSION))
