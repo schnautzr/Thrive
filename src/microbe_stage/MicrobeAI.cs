@@ -300,7 +300,7 @@ public class MicrobeAI
         }
 
         // Don't bother with chunks when there's a lot of microbes to compete with
-        if (chosenChunk != null && ! isDrone)
+        if (chosenChunk != null && !isDrone)
         {
             var rivals = 0;
             var distanceToChunk = (microbe.Translation - chosenChunk.Translation).LengthSquared();
@@ -648,15 +648,9 @@ public class MicrobeAI
     /// </summary>
     private void DroneBehavior(Random random, MicrobeAICommonData data)
     {
-        Vector3? targetChunk = GetNearestChunkItem(data.AllChunks, data.AllMicrobes, random)?.Translation;
-        if (targetChunk.HasValue && DistanceFromMe(targetChunk.Value) < microbe.Radius * 80)
-        {
-            microbe.State = Microbe.MicrobeState.Engulf;
-        }
-        else
-        {
-            microbe.State = Microbe.MicrobeState.Normal;
-        }
+        var behavior = DroneAI.DroneBehavior(microbe, random, data);
+
+        microbe.State = behavior.State;
     }
 
     /// <summary>
@@ -814,14 +808,7 @@ public class MicrobeAI
 
     private float DistanceFromMe(Vector3 target)
     {
-        if (microbe.ColonyParent != null)
-        {
-            return (target - microbe.GlobalTransform.origin).LengthSquared();
-        }
-        else
-        {
-            return (target - microbe.Translation).LengthSquared();
-        }
+        return (target - microbe.Translation).LengthSquared();
     }
 
     private bool RollCheck(float ourStat, float dc, Random random)
