@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Godot;
 
 public class DroneAI
@@ -23,7 +24,8 @@ public class DroneAI
     {
         foreach (var chunk in data.AllChunks)
         {
-            if (DistanceFromMe(microbe, chunk.Translation) < microbe.Radius * 80)
+            if (DistanceFromMe(microbe, chunk.Translation) < microbe.Radius * 80 &&
+                CanEatChunk(microbe, chunk))
             {
                 return true;
             }
@@ -35,5 +37,11 @@ public class DroneAI
     private static float DistanceFromMe(Microbe microbe, Vector3 target)
     {
         return (target - microbe.GlobalTransform.origin).LengthSquared();
+    }
+
+    private static bool CanEatChunk(Microbe microbe, FloatingChunk chunk)
+    {
+        return chunk.ContainedCompounds != null &&
+            chunk.ContainedCompounds.Compounds.Any(x => microbe.Compounds.IsUseful(x.Key));
     }
 }
