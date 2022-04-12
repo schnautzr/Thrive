@@ -649,7 +649,7 @@ public class MicrobeAI
     private void DroneBehavior(Random random, MicrobeAICommonData data)
     {
         Vector3? targetChunk = GetNearestChunkItem(data.AllChunks, data.AllMicrobes, random)?.Translation;
-        if (targetChunk.HasValue && DistanceFromMe(targetChunk.Value) < microbe.Radius * 10.2)
+        if (targetChunk.HasValue && DistanceFromMe(targetChunk.Value) < microbe.Radius * 80)
         {
             microbe.State = Microbe.MicrobeState.Engulf;
         }
