@@ -306,7 +306,8 @@ public class MicrobeAI
             var distanceToChunk = (microbe.Translation - chosenChunk.Translation).LengthSquared();
             foreach (var rival in allMicrobes)
             {
-                if (rival != microbe)
+                if ((microbe.Colony == null && rival != microbe)
+                    || (microbe.Colony != rival.Colony))
                 {
                     var rivalDistance = (rival.GlobalTransform.origin - chosenChunk.Translation).LengthSquared();
                     if (rivalDistance < 500.0f &&
