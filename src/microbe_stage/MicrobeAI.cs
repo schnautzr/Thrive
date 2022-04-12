@@ -300,14 +300,13 @@ public class MicrobeAI
         }
 
         // Don't bother with chunks when there's a lot of microbes to compete with
-        if (chosenChunk != null)
+        if (chosenChunk != null && ! isDrone)
         {
             var rivals = 0;
             var distanceToChunk = (microbe.Translation - chosenChunk.Translation).LengthSquared();
             foreach (var rival in allMicrobes)
             {
-                if ((microbe.Colony == null && rival != microbe)
-                    || (microbe.Colony != rival.Colony))
+                if (rival != microbe)
                 {
                     var rivalDistance = (rival.GlobalTransform.origin - chosenChunk.Translation).LengthSquared();
                     if (rivalDistance < 500.0f &&
