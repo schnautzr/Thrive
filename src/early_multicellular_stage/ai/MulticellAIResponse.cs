@@ -1,6 +1,8 @@
-﻿public class MulticellAIResponse
+﻿using Godot;
+
+public class MulticellAIResponse
 {
     public Microbe.MicrobeState State = Microbe.MicrobeState.Normal;
-    public bool FireToxin = false;
+    public Vector3? FireToxinAt;
 
 }

@@ -652,9 +652,9 @@ public class MicrobeAI
 
         microbe.State = behavior.State;
 
-        if (behavior.FireToxin)
+        if (behavior.FireToxinAt.HasValue)
         {
-            microbe.QueueEmitToxin(oxytoxy);
+            microbe.QueueEmitToxin(oxytoxy, behavior.FireToxinAt.Value);
         }
     }
 

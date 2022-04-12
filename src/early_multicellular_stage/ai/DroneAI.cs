@@ -17,7 +17,12 @@ public class DroneAI
             behavior.State = Microbe.MicrobeState.Normal;
         }
 
-        behavior.FireToxin = true;
+        var prey = PreyToShoot(microbe, data);
+
+        if (prey != null)
+        {
+            behavior.FireToxinAt = prey.GlobalTransform.origin;
+        }
 
         return behavior;
     }
@@ -34,6 +39,24 @@ public class DroneAI
         }
 
         return false;
+    }
+
+    private static Microbe? PreyToShoot(Microbe microbe, MicrobeAICommonData data)
+    {
+        Microbe? prey = null;
+        foreach (var otherMicrobe in data.AllMicrobes)
+        {
+            if (!otherMicrobe.Dead)
+            {
+                if (DistanceFromMe(microbe, otherMicrobe.GlobalTransform.origin) <
+                    (250.0f * microbe.Species.Behaviour.Aggression / Constants.MAX_SPECIES_AGGRESSION))
+                {
+                    prey = otherMicrobe;
+                }
+            }
+        }
+
+        return prey;
     }
 
     private static float DistanceFromMe(Microbe microbe, Vector3 target)

@@ -25,6 +25,9 @@ public partial class Microbe
     [JsonProperty]
     private Compound? queuedToxinToEmit;
 
+    [JsonProperty]
+    private Vector3? queuedToxinEmissionDirection;
+
     /// <summary>
     ///   The organelles in this microbe
     /// </summary>
@@ -200,7 +203,9 @@ public partial class Microbe
         var props = new AgentProperties(Species, agentType);
 
         // Find the direction the microbe is facing
-        var direction = (LookAtPoint - Translation).Normalized();
+        var direction = (queuedToxinEmissionDirection.HasValue ? queuedToxinEmissionDirection.Value : LookAtPoint
+            - Translation)
+            .Normalized();
 
         var position = GlobalTransform.origin + (direction * ejectionDistance);
 
@@ -225,9 +230,10 @@ public partial class Microbe
     ///   Only one can be queued at once
     /// </summary>
     /// <param name="toxinCompound">The toxin type to emit</param>
-    public void QueueEmitToxin(Compound toxinCompound)
+    public void QueueEmitToxin(Compound toxinCompound, Vector3 target)
     {
         queuedToxinToEmit = toxinCompound;
+        queuedToxinEmissionDirection = target;
     }
 
     /// <summary>
