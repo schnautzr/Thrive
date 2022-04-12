@@ -26,6 +26,9 @@ public class MicrobeAI
     private readonly Compound phosphates;
 
     [JsonProperty]
+    private bool isDrone = false;
+
+    [JsonProperty]
     private Microbe microbe;
 
     [JsonProperty]
@@ -104,6 +107,9 @@ public class MicrobeAI
     {
         // Disable most AI in a colony
         if (microbe.ColonyParent != null)
+            isDrone = true;
+
+        if (isDrone)
             return;
 
         timeSinceSignalSniffing += delta;
