@@ -153,7 +153,10 @@ public partial class Microbe
             if (colonyState == MicrobeState.Engulf && Membrane.Type.CellWall)
                 return MicrobeState.Normal;
 
-            return colonyState;
+            if (colonyState != MicrobeState.Normal)
+                return colonyState;
+            else
+                return state;
         }
         set
         {
@@ -172,7 +175,7 @@ public partial class Microbe
             }
 
             state = value;
-            if (Colony != null)
+            if (Colony != null && IsPlayerMicrobe)
                 Colony.State = value;
 
             if (value == MicrobeState.Unbinding && IsPlayerMicrobe)

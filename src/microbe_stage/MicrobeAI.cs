@@ -655,7 +655,7 @@ public class MicrobeAI
         }
         else
         {
-            microbe.State = Microbe.MicrobeState.Normal;
+            //microbe.State = Microbe.MicrobeState.Normal;
         }
     }
 
