@@ -110,6 +110,7 @@ public class MicrobeAI
         {
             if (microbe.ColonyParent == null)
             {
+                // Colony leaders run the multicelluar AI, then implement results
                 var behavior = microbe.Colony.AI.OrganismBehavior(delta, random, data);
 
                 microbe.State = behavior.State;
@@ -119,9 +120,12 @@ public class MicrobeAI
                     microbe.LookAtPoint = behavior.MoveTowards.Value;
                     SetMoveSpeed(Constants.AI_BASE_MOVEMENT);
                 }
+
+                return;
             }
             else
             {
+                // Non-leaders permenantly set themselves to drone behavior
                 isDrone = true;
             }
         }
