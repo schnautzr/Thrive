@@ -14,8 +14,11 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
-        response.LookAt = new Vector3(1, 1, 1);
-        response.MoveTowards = new Vector3(1, 1, -Constants.AI_BASE_MOVEMENT);
+        var randomXTarget = random.Next(-1000.0f, 1000.0f);
+        var randomYTarget = random.Next(-1000.0f, 1000.0f);
+
+        response.LookAt = new Vector3(0, 0, 0);
+        response.MoveTowards = new Vector3(randomXTarget, randomYTarget, -Constants.AI_BASE_MOVEMENT);
 
         return response;
     }
