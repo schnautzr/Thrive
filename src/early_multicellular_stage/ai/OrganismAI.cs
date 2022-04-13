@@ -1,4 +1,5 @@
 ﻿using System;
+using Godot;
 
 public class OrganismAI
 {
@@ -6,7 +7,8 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
-        response.MoveTowards = new Godot.Vector3(0, 0, 0);
+        response.LookAt = new Vector3(1, 0, 0);
+        response.MoveTowards = new Vector3(0, 0, -Constants.AI_BASE_MOVEMENT);
 
         return response;
     }

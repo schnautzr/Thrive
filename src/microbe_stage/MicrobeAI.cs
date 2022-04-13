@@ -115,11 +115,11 @@ public class MicrobeAI
 
                 microbe.State = behavior.State;
 
+                if (behavior.LookAt.HasValue)
+                    microbe.LookAtPoint = behavior.LookAt.Value;
+
                 if (behavior.MoveTowards.HasValue)
-                {
-                    microbe.LookAtPoint = behavior.MoveTowards.Value;
-                    SetMoveSpeed(Constants.AI_BASE_MOVEMENT);
-                }
+                    microbe.MovementDirection = behavior.MoveTowards.Value;
 
                 return;
             }
