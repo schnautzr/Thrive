@@ -113,6 +113,12 @@ public class MicrobeAI
                 var behavior = microbe.Colony.AI.OrganismBehavior(delta, random, data);
 
                 microbe.State = behavior.State;
+
+                if (behavior.MoveTowards.HasValue)
+                {
+                    microbe.LookAtPoint = behavior.MoveTowards.Value;
+                    SetMoveSpeed(Constants.AI_BASE_MOVEMENT);
+                }
             }
             else
             {

@@ -6,6 +6,7 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
+        response.MoveTowards = new Godot.Vector3(0, 0, 0);
         response.State = Microbe.MicrobeState.Engulf;
 
         return response;
