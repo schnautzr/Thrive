@@ -204,8 +204,7 @@ public partial class Microbe
 
         // Find the direction the microbe is facing
         var direction = (queuedToxinEmissionDirection.HasValue ? queuedToxinEmissionDirection.Value : LookAtPoint
-            - Translation)
-            .Normalized();
+            - Translation).Normalized();
 
         var position = GlobalTransform.origin + (direction * ejectionDistance);
 
@@ -230,6 +229,7 @@ public partial class Microbe
     ///   Only one can be queued at once
     /// </summary>
     /// <param name="toxinCompound">The toxin type to emit</param>
+    /// <param name="target">The location to shoot the toxin towards</param>
     public void QueueEmitToxin(Compound toxinCompound, Vector3 target)
     {
         queuedToxinToEmit = toxinCompound;
