@@ -30,7 +30,7 @@ public class OrganismAI
 
         if (memorizedMoveDirection != null)
         {
-            response.MoveTowards = memorizedMoveDirection;
+            MoveTowards(response, memorizedMoveDirection);
         }
 
         return response;
@@ -52,5 +52,10 @@ public class OrganismAI
             + new Vector3(Mathf.Cos(targetAngle) * 1000.0f,
                 0,
                 Mathf.Sin(targetAngle) * 1000.0f);
+    }
+
+    private void MoveTowards(MulticellAIResponse response, Vector3? target)
+    {
+        response.MoveTowards = target - response.LookAt;
     }
 }
