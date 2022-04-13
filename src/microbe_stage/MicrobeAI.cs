@@ -742,7 +742,7 @@ public class MicrobeAI
             if (CanShootToxin())
             {
                 microbe.LookAtPoint = target;
-                microbe.QueueEmitToxin(oxytoxy, microbe.LookAtPoint);
+                microbe.QueueEmitToxin(oxytoxy, microbe.LookAtPoint - microbe.Translation);
             }
         }
     }
