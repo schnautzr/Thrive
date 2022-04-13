@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 [UseThriveSerializer]
 public class MicrobeColony
 {
+    [JsonProperty]
+    public OrganismAI AI = new OrganismAI();
+
     private Microbe.MicrobeState state;
 
     [JsonConstructor]

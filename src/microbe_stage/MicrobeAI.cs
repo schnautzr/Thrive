@@ -106,8 +106,19 @@ public class MicrobeAI
     public void Think(float delta, Random random, MicrobeAICommonData data)
     {
         // Disable most AI in a colony
-        if (microbe.ColonyParent != null)
-            isDrone = true;
+        if (microbe.Colony != null && microbe.ColonyParent != null)
+        {
+            if (microbe.ColonyParent == microbe)
+            {
+                var behavior = microbe.Colony.AI.OrganismBehavior(delta, random, data);
+
+                microbe.State = behavior.State;
+            }
+            else
+            {
+                isDrone = true;
+            }
+        }
 
         if (isDrone)
         {
