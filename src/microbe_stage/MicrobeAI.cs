@@ -116,7 +116,7 @@ public class MicrobeAI
                 microbe.State = behavior.State;
 
                 if (behavior.LookAt.HasValue)
-                    microbe.LookAtPoint = behavior.LookAt.Value.Normalized();
+                    microbe.LookAtPoint = behavior.LookAt.Value;
 
                 if (behavior.MoveTowards.HasValue)
                     microbe.MovementDirection = behavior.MoveTowards.Value.Normalized();
