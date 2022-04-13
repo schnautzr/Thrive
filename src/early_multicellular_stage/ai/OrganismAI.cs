@@ -3,6 +3,13 @@ using Godot;
 
 public class OrganismAI
 {
+    public MicrobeColony Colony;
+
+    public OrganismAI(MicrobeColony colony)
+    {
+        Colony = colony;
+    }
+
     public MulticellAIResponse OrganismBehavior(float delta, Random random, MicrobeAICommonData data)
     {
         var response = new MulticellAIResponse();

@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 public class MicrobeColony
 {
     [JsonProperty]
-    public OrganismAI AI = new OrganismAI();
+    public OrganismAI AI;
 
     private Microbe.MicrobeState state;
 
@@ -19,6 +19,8 @@ public class MicrobeColony
         master.ColonyChildren = new List<Microbe>();
         ColonyMembers = new List<Microbe> { master };
         ColonyCompounds = new ColonyCompoundBag(this);
+
+        AI = new OrganismAI(this);
 
         // Grab initial state from microbe to preserve that (only really important for multicellular)
         state = master.State;
