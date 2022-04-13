@@ -9,6 +9,9 @@ public class OrganismAI
     [JsonProperty]
     private Vector3? memorizedMoveDirection;
 
+    [JsonProperty]
+    private Double targetAngle;
+
     public OrganismAI(MicrobeColony colony)
     {
         Colony = colony;
@@ -18,7 +21,7 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
-        response.LookAt = new Vector3(0, 0, 0);
+        Turn(response, 0.1f);
 
         if (memorizedMoveDirection == null)
         {
@@ -39,5 +42,16 @@ public class OrganismAI
         var randomYTarget = random.Next(-1000.0f, 1000.0f);
 
         memorizedMoveDirection = new Vector3(randomXTarget, randomYTarget, -Constants.AI_BASE_MOVEMENT);
+    }
+
+    private void Turn(MulticellAIResponse response, float turn)
+    {
+        var offsetPosition = Colony.Master.LookAtPoint - Colony.Master.GlobalTransform.origin;
+        var previousAngle = Mathf.Atan2(offsetPosition.y, offsetPosition.x);
+
+        response.LookAt = Colony.Master.GlobalTransform.origin
+            + new Vector3(Mathf.Cos(previousAngle + turn) * 1000.0f,
+                0,
+                Mathf.Sin(previousAngle + turn) * 1000.0f);
     }
 }
