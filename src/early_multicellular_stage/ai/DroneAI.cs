@@ -64,7 +64,11 @@ public class DroneAI
 
     private static bool CanEatChunk(Microbe microbe, FloatingChunk chunk)
     {
-        return chunk.ContainedCompounds != null &&
-            chunk.ContainedCompounds.Compounds.Any(x => microbe.Compounds.IsUseful(x.Key));
+        if (chunk.ContainedCompounds == null)
+        {
+            return false;
+        }
+
+        return chunk.ContainedCompounds.Compounds.Any(x => microbe.Compounds.IsUseful(x.Key));
     }
 }
