@@ -21,7 +21,7 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
-        Turn(response, random.NextFloat() * 0.3f);
+        Turn(response, 0.3f);
 
         if (memorizedMoveDirection == null)
         {
@@ -41,7 +41,7 @@ public class OrganismAI
         var randomXTarget = random.Next(-1000.0f, 1000.0f);
         var randomYTarget = random.Next(-1000.0f, 1000.0f);
 
-        memorizedMoveDirection = new Vector3(randomXTarget, randomYTarget, -Constants.AI_BASE_MOVEMENT);
+        memorizedMoveDirection = new Vector3(0, 0, -Constants.AI_BASE_MOVEMENT);
     }
 
     private void Turn(MulticellAIResponse response, float turn)
@@ -56,6 +56,6 @@ public class OrganismAI
 
     private void MoveTowards(MulticellAIResponse response, Vector3? target)
     {
-        response.MoveTowards = target - response.LookAt;
+        response.MoveTowards = (target - Colony.Master.GlobalTransform.origin) - response.LookAt;
     }
 }
