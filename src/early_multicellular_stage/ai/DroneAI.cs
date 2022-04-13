@@ -48,10 +48,10 @@ public class DroneAI
         {
             if (otherMicrobe.Species != microbe.Species && !otherMicrobe.Dead
                 && DistanceFromMe(microbe, otherMicrobe.GlobalTransform.origin) <
-                    (250.0f * microbe.Species.Behaviour.Aggression / Constants.MAX_SPECIES_AGGRESSION))
-                {
-                    prey = otherMicrobe;
-                }
+                (250.0f * microbe.Species.Behaviour.Aggression / Constants.MAX_SPECIES_AGGRESSION))
+            {
+                prey = otherMicrobe;
+            }
         }
 
         return prey;
