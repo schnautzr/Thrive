@@ -8,7 +8,7 @@ public class DroneAI
     {
         var behavior = new MulticellAIResponse();
 
-        if (HasNearbyEngulfableChunks(microbe, data))
+        if (!microbe.Membrane.Type.CellWall && HasNearbyEngulfableChunks(microbe, data))
         {
             behavior.State = Microbe.MicrobeState.Engulf;
         }
