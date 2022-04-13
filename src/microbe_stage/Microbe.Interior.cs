@@ -203,7 +203,9 @@ public partial class Microbe
         var props = new AgentProperties(Species, agentType);
 
         // Find the direction the microbe is facing
-        var direction = (queuedToxinEmissionDirection.HasValue ? queuedToxinEmissionDirection.Value : LookAtPoint
+        var direction = (queuedToxinEmissionDirection.HasValue ?
+            queuedToxinEmissionDirection.Value :
+            LookAtPoint
             - Translation).Normalized();
 
         var position = GlobalTransform.origin + (direction * ejectionDistance);

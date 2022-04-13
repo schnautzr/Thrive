@@ -155,8 +155,8 @@ public partial class Microbe
 
             if (colonyState != MicrobeState.Normal)
                 return colonyState;
-            else
-                return state;
+
+            return state;
         }
         set
         {

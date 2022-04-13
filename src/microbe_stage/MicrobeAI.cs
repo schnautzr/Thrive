@@ -26,7 +26,7 @@ public class MicrobeAI
     private readonly Compound phosphates;
 
     [JsonProperty]
-    private bool isDrone = false;
+    private bool isDrone;
 
     [JsonProperty]
     private Microbe microbe;
