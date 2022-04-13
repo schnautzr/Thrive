@@ -7,8 +7,8 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
-        response.LookAt = new Vector3(1, 0, 0);
-        response.MoveTowards = new Vector3(0, 0, -Constants.AI_BASE_MOVEMENT);
+        response.LookAt = new Vector3(1, 1, 1);
+        response.MoveTowards = new Vector3(1, 1, -Constants.AI_BASE_MOVEMENT);
 
         return response;
     }
