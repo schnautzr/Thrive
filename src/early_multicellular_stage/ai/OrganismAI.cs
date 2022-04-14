@@ -43,7 +43,10 @@ public class OrganismAI
         if (ExistingStrategy())
         {
             RunExistingStrategy(response, random);
+            return response;
         }
+
+        Colony.Master.State = Microbe.MicrobeState.Normal;
 
         var chunksToEat = ChunksNearMeWorthEating(data);
         if (chunksToEat.Count > 0)
@@ -69,7 +72,13 @@ public class OrganismAI
 
     public bool ExistingStrategy()
     {
-        if (pursuitFrustration > 0.0f)
+        if (pursuitFrustration >= FrustrationThreshold)
+        {
+            pursuitTarget = null;
+            pursuitFrustration = 0.0f;
+        }
+
+        if (pursuitTarget != null)
         {
             return true;
         }
@@ -87,11 +96,11 @@ public class OrganismAI
                 MoveTowards(response, pursuitTarget.GlobalTransform.origin);
                 response.FireToxinAt = pursuitTarget.GlobalTransform.origin;
                 pursuitFrustration++;
-            }
 
-            if (pursuitFrustration >= FrustrationThreshold)
-            {
-                pursuitTarget = null;
+                if (pursuitTarget.Dead)
+                {
+                    pursuitFrustration += FrustrationThreshold;
+                }
             }
         }
     }
