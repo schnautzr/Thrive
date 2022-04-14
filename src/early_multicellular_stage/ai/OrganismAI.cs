@@ -32,13 +32,16 @@ public class OrganismAI
     private void WanderToNewPosition(MulticellAIResponse response, Random random, MicrobeAICommonData data)
     {
         SetNewRandomMovementDirection(random);
+        response.LookAt = migrationLocation;
         MoveTowards(response, migrationLocation);
     }
 
     private void SetNewRandomMovementDirection(Random random)
     {
+        var maxDistance = 200.0f;
+
         migrationLocation = Colony.Master.GlobalTransform.origin
-            + new Vector3(random.Next(-1000.0f, 1000.0f), 0, random.Next(-1000.0f, 1000.0f));
+            + new Vector3(random.Next(-maxDistance, maxDistance), 0, random.Next(-maxDistance, maxDistance));
     }
 
     private void Turn(MulticellAIResponse response, float turn)
@@ -59,6 +62,7 @@ public class OrganismAI
         var relativeMove = target - Colony.Master.GlobalTransform.origin;
         var moveAngle = Mathf.Atan2(relativeMove.Value.z, relativeMove.Value.x);
 
+        // This calculation needs to subtract PI or else the organism is 90 degrees off target. I don't know why.
         var newAngle = moveAngle - lookAngle - 3.141592f / 2;
 
         response.MoveTowards = new Vector3(Mathf.Cos(newAngle), 0, Mathf.Sin(newAngle));
