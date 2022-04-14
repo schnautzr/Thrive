@@ -121,6 +121,9 @@ public class MicrobeAI
                 if (behavior.MoveTowards.HasValue)
                     microbe.MovementDirection = behavior.MoveTowards.Value.Normalized();
 
+                if (behavior.FireToxinAt.HasValue)
+                    microbe.QueueEmitToxin(oxytoxy, behavior.FireToxinAt.Value);
+
                 return;
             }
             else
