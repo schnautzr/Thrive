@@ -6,10 +6,20 @@ using Newtonsoft.Json;
 
 public class OrganismAI
 {
+    [JsonProperty]
     public MicrobeColony Colony;
 
     [JsonProperty]
+    public float FrustrationThreshold = 100.0f;
+
+    [JsonProperty]
     private Vector3? migrationLocation;
+
+    [JsonProperty]
+    private Microbe? pursuitTarget;
+
+    [JsonProperty]
+    private float pursuitFrustration = 0.0f;
 
     [JsonProperty]
     private float targetAngle;
@@ -23,9 +33,16 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
+        // Set the next migration goal, even though this might get overwritten
         if (migrationLocation == null || SquaredDistanceFromMe(migrationLocation.Value) < 100.0f)
         {
             WanderToNewPosition(response, random, data);
+        }
+
+        // If there is an existing strategy, try sticking witih it
+        if (ExistingStrategy())
+        {
+            RunExistingStrategy(response, random);
         }
 
         var chunksToEat = ChunksNearMeWorthEating(data);
@@ -43,13 +60,40 @@ public class OrganismAI
 
             if (microbesToShoot.Count > 0)
             {
-                response.LookAt = microbesToShoot.First().GlobalTransform.origin;
-                MoveTowards(response, migrationLocation);
-                response.FireToxinAt = microbesToShoot.First().GlobalTransform.origin;
+                pursuitTarget = microbesToShoot.First();
             }
         }
 
         return response;
+    }
+
+    public bool ExistingStrategy()
+    {
+        if (pursuitFrustration > 0.0f)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void RunExistingStrategy(MulticellAIResponse response, Random random)
+    {
+        if (pursuitTarget != null)
+        {
+            if (pursuitFrustration < 100.0f)
+            {
+                response.LookAt = pursuitTarget.GlobalTransform.origin;
+                MoveTowards(response, pursuitTarget.GlobalTransform.origin);
+                response.FireToxinAt = pursuitTarget.GlobalTransform.origin;
+                pursuitFrustration++;
+            }
+
+            if (pursuitFrustration >= FrustrationThreshold)
+            {
+                pursuitTarget = null;
+            }
+        }
     }
 
     private void WanderToNewPosition(MulticellAIResponse response, Random random, MicrobeAICommonData data)
