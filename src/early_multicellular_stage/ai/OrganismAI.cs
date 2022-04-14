@@ -21,7 +21,7 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
-        Turn(response, 0.3f);
+        Turn(response, 0.1f);
 
         if (memorizedMoveDirection == null)
         {
@@ -30,7 +30,7 @@ public class OrganismAI
 
         if (memorizedMoveDirection != null)
         {
-            MoveTowards(response, memorizedMoveDirection);
+            MoveTowards(response, ThePlayer(data));
         }
 
         return response;
@@ -56,6 +56,18 @@ public class OrganismAI
 
     private void MoveTowards(MulticellAIResponse response, Vector3? target)
     {
+        /*GD.Print(", position diff = X:" + (target - Colony.Master.GlobalTransform.origin).Value.x + " Z:"+ (target - Colony.Master.GlobalTransform.origin).Value.z +
+            ", position diff normalized = X:" + (target - Colony.Master.GlobalTransform.origin).Value.Normalized().x + " Z:" + (target - Colony.Master.GlobalTransform.origin).Value.Normalized().z
+            + ", lookat = X: "+ (response.LookAt.Value - Colony.Master.GlobalTransform.origin).Normalized().x 
+            + " Z:" + (response.LookAt.Value - Colony.Master.GlobalTransform.origin).Normalized().z
+            + ", X:"+ ((target - Colony.Master.GlobalTransform.origin).Value.Normalized() - (response.LookAt.Value - Colony.Master.GlobalTransform.origin).Normalized()).x 
+            + " Z:" + ((target - Colony.Master.GlobalTransform.origin).Value.Normalized() - (response.LookAt.Value - Colony.Master.GlobalTransform.origin).Normalized()).z);
+
+        var flippedResult = response.MoveTowards = (Colony.Master.GlobalTransform.origin - target).Value.Normalized()
+            .Bounce((response.LookAt.Value - Colony.Master.GlobalTransform.origin).Normalized());
+
+        response.MoveTowards = new Vector3(0, 0, flippedResult.Value.x);*/
+
         var relativeLook = response.LookAt - Colony.Master.GlobalTransform.origin;
         var lookAngle = Mathf.Atan2(relativeLook.Value.z, relativeLook.Value.x);
 
@@ -65,5 +77,19 @@ public class OrganismAI
         var newAngle = moveAngle - lookAngle - 3.141592f / 2;
 
         response.MoveTowards = new Vector3(Mathf.Cos(newAngle), 0, Mathf.Sin(newAngle));
+    }
+
+    //TODO: Remove
+    private Vector3 ThePlayer(MicrobeAICommonData data)
+    {
+        foreach (Microbe microbe in data.AllMicrobes)
+        {
+            if (microbe.IsPlayerMicrobe)
+            {
+                return microbe.GlobalTransform.origin;
+            }
+        }
+
+        throw new Exception();
     }
 }
