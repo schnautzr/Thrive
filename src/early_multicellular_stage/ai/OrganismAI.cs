@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Newtonsoft.Json;
 
@@ -24,6 +26,11 @@ public class OrganismAI
         if (migrationLocation == null || SquaredDistanceFromMe(migrationLocation.Value) < 100.0f)
         {
             WanderToNewPosition(response, random, data);
+        }
+
+        if (ChunksNearMeWorthEating(data).Count > 0)
+        {
+            Turn(response, 0.5f);
         }
 
         return response;
@@ -66,6 +73,13 @@ public class OrganismAI
         var newAngle = moveAngle - lookAngle - 3.141592f / 2;
 
         response.MoveTowards = new Vector3(Mathf.Cos(newAngle), 0, Mathf.Sin(newAngle));
+    }
+
+    private List<FloatingChunk> ChunksNearMeWorthEating(MicrobeAICommonData data)
+    {
+        return data.AllChunks.Where(chunk =>
+            chunk.ContainedCompounds != null
+            && SquaredDistanceFromMe(chunk.Translation) < 1000.0f).ToList();
     }
 
     private float SquaredDistanceFromMe(Vector3 target)
