@@ -30,7 +30,7 @@ public class OrganismAI
 
         if (memorizedMoveDirection != null)
         {
-            MoveTowards(response, ThePlayer(data));
+            MoveTowards(response, memorizedMoveDirection);
         }
 
         return response;
@@ -65,19 +65,5 @@ public class OrganismAI
         var newAngle = moveAngle - lookAngle - 3.141592f / 2;
 
         response.MoveTowards = new Vector3(Mathf.Cos(newAngle), 0, Mathf.Sin(newAngle));
-    }
-
-    //TODO: Remove
-    private Vector3 ThePlayer(MicrobeAICommonData data)
-    {
-        foreach (Microbe microbe in data.AllMicrobes)
-        {
-            if (microbe.IsPlayerMicrobe)
-            {
-                return microbe.GlobalTransform.origin;
-            }
-        }
-
-        throw new Exception();
     }
 }
