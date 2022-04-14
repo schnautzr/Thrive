@@ -28,9 +28,14 @@ public class OrganismAI
             WanderToNewPosition(response, random, data);
         }
 
-        if (ChunksNearMeWorthEating(data).Count > 0)
+        var chunksToEat = ChunksNearMeWorthEating(data);
+        if (chunksToEat.Count > 0)
         {
             Turn(response, 0.5f);
+            if (migrationLocation != null)
+            {
+                MoveTowards(response, chunksToEat.First().Translation);
+            }
         }
 
         return response;
