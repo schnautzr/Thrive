@@ -34,18 +34,18 @@ public class OrganismAI
             Turn(response, 0.5f);
             if (migrationLocation != null)
             {
-                MoveTowards(response, chunksToEat.First().Translation);
+                MoveTowards(response, chunksToEat.First().GlobalTransform.origin);
             }
         }
         else
         {
             var microbesToShoot = MicrobesToEat(data);
 
-            if(microbesToShoot.Count > 0)
+            if (microbesToShoot.Count > 0)
             {
-                response.LookAt = microbesToShoot.First().Translation;
+                response.LookAt = microbesToShoot.First().GlobalTransform.origin;
                 MoveTowards(response, migrationLocation);
-                response.FireToxinAt = microbesToShoot.First().Translation;
+                response.FireToxinAt = microbesToShoot.First().GlobalTransform.origin;
             }
         }
 
@@ -102,7 +102,7 @@ public class OrganismAI
     {
         return data.AllMicrobes.Where(microbe =>
         microbe.Species != Colony.Master.Species
-        && SquaredDistanceFromMe(microbe.GlobalTransform.origin) < 4000.0f).ToList();
+        && SquaredDistanceFromMe(microbe.GlobalTransform.origin) < 1000.0f).ToList();
     }
 
     private float SquaredDistanceFromMe(Vector3 target)

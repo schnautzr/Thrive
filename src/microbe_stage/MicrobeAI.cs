@@ -122,7 +122,7 @@ public class MicrobeAI
                     microbe.MovementDirection = behavior.MoveTowards.Value.Normalized();
 
                 if (behavior.FireToxinAt.HasValue)
-                    microbe.QueueEmitToxin(oxytoxy, behavior.FireToxinAt.Value);
+                    microbe.QueueEmitToxin(oxytoxy, behavior.FireToxinAt.Value - microbe.Translation);
 
                 return;
             }
