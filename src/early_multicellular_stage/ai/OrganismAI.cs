@@ -56,6 +56,14 @@ public class OrganismAI
 
     private void MoveTowards(MulticellAIResponse response, Vector3? target)
     {
-        response.MoveTowards = (target - Colony.Master.GlobalTransform.origin) - response.LookAt;
+        var relativeLook = response.LookAt - Colony.Master.GlobalTransform.origin;
+        var lookAngle = Mathf.Atan2(relativeLook.Value.z, relativeLook.Value.x);
+
+        var relativeMove = target - Colony.Master.GlobalTransform.origin;
+        var moveAngle = Mathf.Atan2(relativeMove.Value.z, relativeMove.Value.x);
+
+        var newAngle = moveAngle - lookAngle - 3.141592f / 2;
+
+        response.MoveTowards = new Vector3(Mathf.Cos(newAngle), 0, Mathf.Sin(newAngle));
     }
 }
