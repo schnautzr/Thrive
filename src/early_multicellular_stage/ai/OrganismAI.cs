@@ -7,7 +7,7 @@ public class OrganismAI
     public MicrobeColony Colony;
 
     [JsonProperty]
-    private Vector3? memorizedMoveDirection;
+    private Vector3? migrationLocation;
 
     [JsonProperty]
     private float targetAngle;
@@ -21,27 +21,24 @@ public class OrganismAI
     {
         var response = new MulticellAIResponse();
 
-        Turn(response, 0.1f);
-
-        if (memorizedMoveDirection == null)
+        if (migrationLocation == null || SquaredDistanceFromMe(migrationLocation.Value) < 100.0f)
         {
-            SetNewRandomMovementDirection(random);
-        }
-
-        if (memorizedMoveDirection != null)
-        {
-            MoveTowards(response, memorizedMoveDirection);
+            WanderToNewPosition(response, random, data);
         }
 
         return response;
     }
 
+    private void WanderToNewPosition(MulticellAIResponse response, Random random, MicrobeAICommonData data)
+    {
+        SetNewRandomMovementDirection(random);
+        MoveTowards(response, migrationLocation);
+    }
+
     private void SetNewRandomMovementDirection(Random random)
     {
-        var randomXTarget = random.Next(-1000.0f, 1000.0f);
-        var randomYTarget = random.Next(-1000.0f, 1000.0f);
-
-        memorizedMoveDirection = new Vector3(0, 0, -Constants.AI_BASE_MOVEMENT);
+        migrationLocation = Colony.Master.GlobalTransform.origin
+            + new Vector3(random.Next(-1000.0f, 1000.0f), 0, random.Next(-1000.0f, 1000.0f));
     }
 
     private void Turn(MulticellAIResponse response, float turn)
@@ -65,5 +62,10 @@ public class OrganismAI
         var newAngle = moveAngle - lookAngle - 3.141592f / 2;
 
         response.MoveTowards = new Vector3(Mathf.Cos(newAngle), 0, Mathf.Sin(newAngle));
+    }
+
+    private float SquaredDistanceFromMe(Vector3 target)
+    {
+        return (target - Colony.Master.GlobalTransform.origin).LengthSquared();
     }
 }
