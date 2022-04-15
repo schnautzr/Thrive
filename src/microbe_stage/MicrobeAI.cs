@@ -174,6 +174,7 @@ public class MicrobeAI
     /// </summary>
     public void ResetAI()
     {
+        isDrone = false;
         previousAngle = 0;
         targetPosition = Vector3.Zero;
         focusedPrey.Value = null;
