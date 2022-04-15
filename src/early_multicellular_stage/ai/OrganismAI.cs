@@ -86,11 +86,6 @@ public class OrganismAI
                 Turn(response, 0.5f);
                 MoveTowards(response, chunksToEat.First().GlobalTransform.origin);
             }
-            else
-            {
-                response.LookAt = migrationLocation;
-                MoveTowards(response, migrationLocation);
-            }
         }
 
         return response;
