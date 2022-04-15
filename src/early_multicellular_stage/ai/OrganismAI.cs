@@ -27,6 +27,9 @@ public class OrganismAI
     public OrganismAI(MicrobeColony colony)
     {
         Colony = colony;
+        Colony.ColonyMembers.ForEach(member =>
+            member.State = Microbe.MicrobeState.Normal
+        );
     }
 
     public MulticellAIResponse OrganismBehavior(float delta, Random random, MicrobeAICommonData data)
@@ -45,8 +48,6 @@ public class OrganismAI
             RunExistingStrategy(response, random);
             return response;
         }
-
-        Colony.Master.State = Microbe.MicrobeState.Normal;
 
         var chunksToEat = ChunksNearMeWorthEating(data);
         if (chunksToEat.Count > 0)
