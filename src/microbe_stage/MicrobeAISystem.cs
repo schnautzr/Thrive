@@ -50,7 +50,7 @@ public class MicrobeAISystem
                      a < start + Constants.MICROBE_AI_OBJECTS_PER_TASK && a < nodes.Count;
                      ++a)
                 {
-                    RunAIFor(nodes[a], delta, random, data);
+                    RunAIFor(nodes[a] as IMicrobeAI, delta, random, data);
                 }
             });
 
