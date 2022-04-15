@@ -16,10 +16,16 @@ public class OrganismAI
     private Vector3? migrationLocation;
 
     [JsonProperty]
-    private Microbe? pursuitTarget;
+    private Microbe? toxinPursuitTarget;
 
     [JsonProperty]
-    private float pursuitFrustration = 0.0f;
+    private float toxinPursuitFrustration = 0.0f;
+
+    [JsonProperty]
+    private Microbe? masticationTarget;
+
+    [JsonProperty]
+    private float masticationFrustration = 0.0f;
 
     [JsonProperty]
     private float targetAngle;
@@ -45,26 +51,38 @@ public class OrganismAI
         // If there is an existing strategy, try sticking witih it
         if (ExistingStrategy())
         {
+            GD.Print("Existing strat");
             RunExistingStrategy(response, random);
             return response;
         }
+        GD.Print("Finding new strat");
 
-        var chunksToEat = ChunksNearMeWorthEating(data);
-        if (chunksToEat.Count > 0)
+        var microbesToEat = MicrobesToEat(data);
+
+        if (microbesToEat.Count > 0)
         {
-            Turn(response, 0.5f);
-            if (migrationLocation != null)
+            if (Colony.Master.Compounds.GetCompoundAmount(SimulationParameters.Instance.GetCompound("oxytoxy")) > 4.0f)
             {
-                MoveTowards(response, chunksToEat.First().GlobalTransform.origin);
+                toxinPursuitTarget = microbesToEat.First();
+            }
+            else
+            {
+                masticationTarget = microbesToEat.First();
+                masticationFrustration = 1.0f;
             }
         }
         else
         {
-            var microbesToShoot = MicrobesToEat(data);
-
-            if (microbesToShoot.Count > 0)
+            var chunksToEat = ChunksNearMeWorthEating(data);
+            if (chunksToEat.Count > 0)
             {
-                pursuitTarget = microbesToShoot.First();
+                Turn(response, 0.5f);
+                MoveTowards(response, chunksToEat.First().GlobalTransform.origin);
+            }
+            else
+            {
+                response.LookAt = migrationLocation;
+                MoveTowards(response, migrationLocation);
             }
         }
 
@@ -73,13 +91,24 @@ public class OrganismAI
 
     public bool ExistingStrategy()
     {
-        if (pursuitFrustration >= FrustrationThreshold)
+        if (toxinPursuitFrustration >= FrustrationThreshold)
         {
-            pursuitTarget = null;
-            pursuitFrustration = 0.0f;
+            toxinPursuitTarget = null;
+            toxinPursuitFrustration = 0.0f;
         }
 
-        if (pursuitTarget != null)
+        if (masticationFrustration >= FrustrationThreshold)
+        {
+            masticationTarget = null;
+            masticationFrustration = 0.0f;
+        }
+
+        if (masticationTarget != null)
+        {
+            return true;
+        }
+
+        if (toxinPursuitTarget != null)
         {
             return true;
         }
@@ -89,19 +118,46 @@ public class OrganismAI
 
     public void RunExistingStrategy(MulticellAIResponse response, Random random)
     {
-        if (pursuitTarget != null)
+        if (masticationTarget != null)
         {
-            if (pursuitFrustration < 100.0f)
+            if ((Colony.Master.LookAtPoint - masticationTarget.GlobalTransform.origin).LengthSquared() < 100.0f)
             {
-                response.LookAt = pursuitTarget.GlobalTransform.origin;
-                MoveTowards(response, pursuitTarget.GlobalTransform.origin);
-                response.FireToxinAt = pursuitTarget.GlobalTransform.origin;
-                pursuitFrustration++;
-
-                if (pursuitTarget.Dead)
+                if (random.NextFloat() > 0.5f)
                 {
-                    pursuitFrustration += FrustrationThreshold;
+                    Turn(response, 1.2f);
                 }
+                else
+                {
+                    Turn(response, -1.2f);
+                }
+            }
+            else
+            {
+                response.LookAt = masticationTarget.GlobalTransform.origin;
+            }
+
+            masticationFrustration += 5.0f;
+
+            if (masticationTarget.Dead
+                || SquaredDistanceFromMe(masticationTarget.GlobalTransform.origin) < 100.0f
+                || SquaredDistanceFromMe(masticationTarget.GlobalTransform.origin) > 2000.0f)
+            {
+                masticationFrustration += FrustrationThreshold;
+            }
+
+            return;
+        }
+
+        if (toxinPursuitTarget != null)
+        {
+            response.LookAt = toxinPursuitTarget.GlobalTransform.origin;
+            MoveTowards(response, toxinPursuitTarget.GlobalTransform.origin);
+            response.FireToxinAt = toxinPursuitTarget.GlobalTransform.origin;
+            toxinPursuitFrustration++;
+
+            if (toxinPursuitTarget.Dead)
+            {
+                toxinPursuitFrustration += FrustrationThreshold;
             }
         }
     }
@@ -156,7 +212,8 @@ public class OrganismAI
     {
         return data.AllMicrobes.Where(microbe =>
         microbe.Species != Colony.Master.Species
-        && SquaredDistanceFromMe(microbe.GlobalTransform.origin) < 1000.0f).ToList();
+        && !microbe.Dead
+        && SquaredDistanceFromMe(microbe.GlobalTransform.origin) < 1500.0f).ToList();
     }
 
     private float SquaredDistanceFromMe(Vector3 target)
