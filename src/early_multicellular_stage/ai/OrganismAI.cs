@@ -97,7 +97,7 @@ public class OrganismAI
     {
         if (toxinPursuitFrustration >= FrustrationThreshold)
         {
-            toxinPursuitTarget = null;
+            toxinPursuitTarget.Value = null;
             toxinPursuitFrustration = 0.0f;
         }
 
