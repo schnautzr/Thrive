@@ -37,8 +37,7 @@ public class OrganismAI
     {
         Colony = colony;
         Colony.ColonyMembers.ForEach(member =>
-            member.State = Microbe.MicrobeState.Normal
-        );
+            member.State = Microbe.MicrobeState.Normal);
     }
 
     public MulticellAIResponse OrganismBehavior(float delta, Random random, MicrobeAICommonData data)
@@ -62,8 +61,7 @@ public class OrganismAI
 
         var microbesToEat = MicrobesToEat(data);
         CanMasticate = Colony.ColonyMembers.Any(member =>
-            member.HasForwardPilus()
-        );
+            member.HasForwardPilus());
 
         if (microbesToEat.Count > 0)
         {
