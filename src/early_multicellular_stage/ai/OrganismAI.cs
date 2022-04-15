@@ -100,7 +100,7 @@ public class OrganismAI
 
         if (masticationFrustration >= FrustrationThreshold)
         {
-            masticationTarget = null;
+            masticationTarget.Value = null;
         }
 
         if (masticationTarget.Value != null)
@@ -156,7 +156,7 @@ public class OrganismAI
             return;
         }
 
-        if (toxinPursuitTarget != null)
+        if (toxinPursuitTarget.Value != null)
         {
             if (toxinPursuitTarget.Value.Dead)
             {
