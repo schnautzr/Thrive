@@ -10,7 +10,7 @@ public class OrganismAI
     public MicrobeColony Colony;
 
     [JsonProperty]
-    public bool CanMasticate;
+    public bool CanMasticate = false;
 
     [JsonProperty]
     public float FrustrationThreshold = 100.0f;
@@ -39,10 +39,6 @@ public class OrganismAI
         Colony.ColonyMembers.ForEach(member =>
             member.State = Microbe.MicrobeState.Normal
         );
-
-        CanMasticate = Colony.ColonyMembers.Any(member =>
-            member.HasForwardPilus()
-        );
     }
 
     public MulticellAIResponse OrganismBehavior(float delta, Random random, MicrobeAICommonData data)
@@ -63,6 +59,9 @@ public class OrganismAI
         }
 
         var microbesToEat = MicrobesToEat(data);
+        CanMasticate = Colony.ColonyMembers.Any(member =>
+            member.HasForwardPilus()
+        );
 
         if (microbesToEat.Count > 0)
         {
