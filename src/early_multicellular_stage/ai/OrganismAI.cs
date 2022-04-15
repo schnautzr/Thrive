@@ -65,11 +65,12 @@ public class OrganismAI
 
         if (microbesToEat.Count > 0)
         {
-            if (Colony.Master.Compounds.GetCompoundAmount(SimulationParameters.Instance.GetCompound("oxytoxy")) > 4.0f)
+            if (toxinPursuitFrustration <= 0.0f
+                && Colony.Master.Compounds.GetCompoundAmount(SimulationParameters.Instance.GetCompound("oxytoxy")) > 4.0f)
             {
                 toxinPursuitTarget.Value = microbesToEat.First();
             }
-            else if (CanMasticate)
+            else if (CanMasticate && masticationFrustration <= 0.0f)
             {
                 masticationTarget.Value = microbesToEat.First();
                 masticationFrustration = 1.0f;
@@ -95,29 +96,37 @@ public class OrganismAI
 
     public bool ExistingStrategy()
     {
+        var retval = false;
+
         if (toxinPursuitFrustration >= FrustrationThreshold)
         {
             toxinPursuitTarget.Value = null;
-            toxinPursuitFrustration = 0.0f;
         }
 
         if (masticationFrustration >= FrustrationThreshold)
         {
             masticationTarget = null;
-            masticationFrustration = 0.0f;
         }
 
         if (masticationTarget.Value != null)
         {
-            return true;
+            retval = true;
+        }
+        else if (masticationFrustration > 0.0f)
+        {
+            masticationFrustration -= 10.0f;
         }
 
         if (toxinPursuitTarget.Value != null)
         {
-            return true;
+            retval = true;
+        }
+        else if (toxinPursuitFrustration > 0.0f)
+        {
+            toxinPursuitFrustration -= 5.0f;
         }
 
-        return false;
+        return retval;
     }
 
     public void RunExistingStrategy(MulticellAIResponse response, Random random)
