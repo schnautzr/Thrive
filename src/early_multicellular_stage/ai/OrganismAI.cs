@@ -10,6 +10,9 @@ public class OrganismAI
     public MicrobeColony Colony;
 
     [JsonProperty]
+    public bool CanMasticate;
+
+    [JsonProperty]
     public float FrustrationThreshold = 100.0f;
 
     [JsonProperty]
@@ -36,6 +39,10 @@ public class OrganismAI
         Colony.ColonyMembers.ForEach(member =>
             member.State = Microbe.MicrobeState.Normal
         );
+
+        CanMasticate = Colony.ColonyMembers.Any(member =>
+            member.HasPilus
+        );
     }
 
     public MulticellAIResponse OrganismBehavior(float delta, Random random, MicrobeAICommonData data)
@@ -51,11 +58,9 @@ public class OrganismAI
         // If there is an existing strategy, try sticking witih it
         if (ExistingStrategy())
         {
-            GD.Print("Existing strat");
             RunExistingStrategy(response, random);
             return response;
         }
-        GD.Print("Finding new strat");
 
         var microbesToEat = MicrobesToEat(data);
 
@@ -65,7 +70,7 @@ public class OrganismAI
             {
                 toxinPursuitTarget = microbesToEat.First();
             }
-            else
+            else if (CanMasticate)
             {
                 masticationTarget = microbesToEat.First();
                 masticationFrustration = 1.0f;

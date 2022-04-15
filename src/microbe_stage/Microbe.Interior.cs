@@ -914,6 +914,15 @@ public partial class Microbe
         return hasSignalingAgent.Value;
     }
 
+    private bool CheckHasPilus()
+    {
+        if (hasSignalingAgent != null)
+            return hasSignalingAgent.Value;
+
+        hasSignalingAgent = organelles!.Any(o => o.HasComponent<PilusComponent>());
+        return hasSignalingAgent.Value;
+    }
+
     /// <summary>
     ///   Ejects compounds from the microbes behind position, into the environment
     /// </summary>
