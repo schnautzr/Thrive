@@ -473,6 +473,12 @@ public partial class Microbe
         return result;
     }
 
+    public bool HasForwardPilus()
+    {
+        return organelles.Any(organelle =>
+        organelle.HasComponent<PilusComponent>());
+    }
+
     private void HandleCompoundAbsorbing(float delta)
     {
         // max here buffs compound absorbing for the smallest cells
@@ -911,15 +917,6 @@ public partial class Microbe
             return hasSignalingAgent.Value;
 
         hasSignalingAgent = organelles!.Any(o => o.HasComponent<SignalingAgentComponent>());
-        return hasSignalingAgent.Value;
-    }
-
-    private bool CheckHasPilus()
-    {
-        if (hasSignalingAgent != null)
-            return hasSignalingAgent.Value;
-
-        hasSignalingAgent = organelles!.Any(o => o.HasComponent<PilusComponent>());
         return hasSignalingAgent.Value;
     }
 

@@ -41,7 +41,7 @@ public class OrganismAI
         );
 
         CanMasticate = Colony.ColonyMembers.Any(member =>
-            member.HasPilus
+            member.HasForwardPilus()
         );
     }
 

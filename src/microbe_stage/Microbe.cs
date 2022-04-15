@@ -152,15 +152,6 @@ public partial class Microbe : RigidBody, ISpawned, IProcessable, IMicrobeAI, IS
     }
 
     [JsonIgnore]
-    public bool HasPilus
-    {
-        get
-        {
-            return CheckHasPilus();
-        }
-    }
-
-    [JsonIgnore]
     public MicrobeSignalCommand SignalCommand
     {
         get
