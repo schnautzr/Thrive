@@ -58,32 +58,9 @@ public class OrganismAI
             RunExistingStrategy(response, random);
             return response;
         }
-
-        var microbesToEat = MicrobesToEat(data);
-        CanMasticate = Colony.ColonyMembers.Any(member =>
-            member.HasForwardPilus());
-
-        if (microbesToEat.Count > 0)
-        {
-            if (toxinPursuitFrustration <= 0.0f
-                && Colony.Master.Compounds.GetCompoundAmount(SimulationParameters.Instance.GetCompound("oxytoxy")) > 4.0f)
-            {
-                toxinPursuitTarget.Value = microbesToEat.First();
-            }
-            else if (CanMasticate && masticationFrustration <= 0.0f)
-            {
-                masticationTarget.Value = microbesToEat.First();
-                masticationFrustration = 1.0f;
-            }
-        }
         else
         {
-            var chunksToEat = ChunksNearMeWorthEating(data);
-            if (chunksToEat.Count > 0)
-            {
-                Turn(response, 0.5f);
-                MoveTowards(response, chunksToEat.First().GlobalTransform.origin);
-            }
+            ChooseNewStrategy(response, random, data);
         }
 
         return response;
@@ -172,10 +149,44 @@ public class OrganismAI
         }
     }
 
+    public void ChooseNewStrategy(MulticellAIResponse response, Random random, MicrobeAICommonData data)
+    {
+        var microbesToEat = MicrobesToEat(data);
+        CanMasticate = Colony.ColonyMembers.Any(member =>
+            member.HasForwardPilus());
+
+        if (microbesToEat.Count > 0)
+        {
+            if (toxinPursuitFrustration <= 0.0f
+                && Colony.Master.Compounds.GetCompoundAmount(SimulationParameters.Instance.GetCompound("oxytoxy")) > 4.0f)
+            {
+                toxinPursuitTarget.Value = microbesToEat.First();
+            }
+            else if (CanMasticate && masticationFrustration <= 0.0f)
+            {
+                masticationTarget.Value = microbesToEat.First();
+                masticationFrustration = 1.0f;
+            }
+        }
+        else
+        {
+            var chunksToEat = ChunksNearMeWorthEating(data);
+            if (chunksToEat.Count > 0)
+            {
+                Turn(response, 0.5f);
+                MoveTowards(response, chunksToEat.First().GlobalTransform.origin);
+            }
+        }
+    }
+
     private void WanderToNewPosition(MulticellAIResponse response, Random random, MicrobeAICommonData data)
     {
         response.LookAt = migrationLocation;
-        MoveTowards(response, migrationLocation);
+
+        if (migrationLocation != null)
+        {
+            MoveTowards(response, migrationLocation.Value);
+        }
     }
 
     private void SetNewRandomMovementDirection(Random random)
@@ -196,18 +207,21 @@ public class OrganismAI
                 Mathf.Sin(targetAngle) * 1000.0f);
     }
 
-    private void MoveTowards(MulticellAIResponse response, Vector3? target)
+    private void MoveTowards(MulticellAIResponse response, Vector3 target)
     {
-        var relativeLook = response.LookAt - Colony.Master.GlobalTransform.origin;
-        var lookAngle = Mathf.Atan2(relativeLook.Value.z, relativeLook.Value.x);
+        if (response.LookAt != null)
+        {
+            var relativeLook = response.LookAt.Value - Colony.Master.GlobalTransform.origin;
+            var lookAngle = Mathf.Atan2(relativeLook.z, relativeLook.x);
 
-        var relativeMove = target - Colony.Master.GlobalTransform.origin;
-        var moveAngle = Mathf.Atan2(relativeMove.Value.z, relativeMove.Value.x);
+            var relativeMove = target - Colony.Master.GlobalTransform.origin;
+            var moveAngle = Mathf.Atan2(relativeMove.z, relativeMove.x);
 
-        // This calculation needs to subtract PI or else the organism is 90 degrees off target. I don't know why.
-        var newAngle = moveAngle - lookAngle - 3.141592f / 2;
+            // This calculation needs to subtract PI or else the organism is 90 degrees off target. I don't know why.
+            var newAngle = moveAngle - lookAngle - 3.141592f / 2;
 
-        response.MoveTowards = new Vector3(Mathf.Cos(newAngle), 0, Mathf.Sin(newAngle));
+            response.MoveTowards = new Vector3(Mathf.Cos(newAngle), 0, Mathf.Sin(newAngle));
+        }
     }
 
     private List<FloatingChunk> ChunksNearMeWorthEating(MicrobeAICommonData data)
