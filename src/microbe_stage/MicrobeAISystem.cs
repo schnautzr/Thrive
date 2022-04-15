@@ -27,7 +27,7 @@ public class MicrobeAISystem
         if (CheatManager.NoAI)
             return;
 
-        var nodes = worldRoot.GetChildrenToProcess<IMicrobeAI>(Constants.AI_GROUP).ToList();
+        var nodes = worldRoot.GetTree().GetNodesInGroup(Constants.AI_GROUP);
 
         // TODO: it would be nice to only rebuild these lists if some AI think interval has elapsed and these are needed
         var allMicrobes = worldRoot.GetTree().GetNodesInGroup(Constants.AI_TAG_MICROBE);
