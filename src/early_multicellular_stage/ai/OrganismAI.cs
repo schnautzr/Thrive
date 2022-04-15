@@ -19,7 +19,7 @@ public class OrganismAI
     private Vector3? migrationLocation;
 
     [JsonProperty]
-    private EntityReference<Microbe> toxinPursuitTarget;
+    private EntityReference<Microbe> toxinPursuitTarget = new();
 
     [JsonProperty]
     private float toxinPursuitFrustration = 0.0f;
