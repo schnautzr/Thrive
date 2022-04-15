@@ -19,13 +19,13 @@ public class OrganismAI
     private Vector3? migrationLocation;
 
     [JsonProperty]
-    private Microbe? toxinPursuitTarget;
+    private EntityReference<Microbe> toxinPursuitTarget;
 
     [JsonProperty]
     private float toxinPursuitFrustration = 0.0f;
 
     [JsonProperty]
-    private Microbe? masticationTarget;
+    private EntityReference<Microbe> masticationTarget = new();
 
     [JsonProperty]
     private float masticationFrustration = 0.0f;
@@ -68,11 +68,11 @@ public class OrganismAI
         {
             if (Colony.Master.Compounds.GetCompoundAmount(SimulationParameters.Instance.GetCompound("oxytoxy")) > 4.0f)
             {
-                toxinPursuitTarget = microbesToEat.First();
+                toxinPursuitTarget.Value = microbesToEat.First();
             }
             else if (CanMasticate)
             {
-                masticationTarget = microbesToEat.First();
+                masticationTarget.Value = microbesToEat.First();
                 masticationFrustration = 1.0f;
             }
         }
@@ -108,12 +108,12 @@ public class OrganismAI
             masticationFrustration = 0.0f;
         }
 
-        if (masticationTarget != null)
+        if (masticationTarget.Value != null)
         {
             return true;
         }
 
-        if (toxinPursuitTarget != null)
+        if (toxinPursuitTarget.Value != null)
         {
             return true;
         }
@@ -125,7 +125,7 @@ public class OrganismAI
     {
         if (masticationTarget != null)
         {
-            if ((Colony.Master.LookAtPoint - masticationTarget.GlobalTransform.origin).LengthSquared() < 100.0f)
+            if ((Colony.Master.LookAtPoint - masticationTarget.Value.GlobalTransform.origin).LengthSquared() < 100.0f)
             {
                 if (random.NextFloat() > 0.5f)
                 {
@@ -138,14 +138,14 @@ public class OrganismAI
             }
             else
             {
-                response.LookAt = masticationTarget.GlobalTransform.origin;
+                response.LookAt = masticationTarget.Value.GlobalTransform.origin;
             }
 
             masticationFrustration += 5.0f;
 
-            if (masticationTarget.Dead
-                || SquaredDistanceFromMe(masticationTarget.GlobalTransform.origin) < 100.0f
-                || SquaredDistanceFromMe(masticationTarget.GlobalTransform.origin) > 2000.0f)
+            if (masticationTarget.Value.Dead
+                || SquaredDistanceFromMe(masticationTarget.Value.GlobalTransform.origin) < 100.0f
+                || SquaredDistanceFromMe(masticationTarget.Value.GlobalTransform.origin) > 2000.0f)
             {
                 masticationFrustration += FrustrationThreshold;
             }
@@ -155,14 +155,16 @@ public class OrganismAI
 
         if (toxinPursuitTarget != null)
         {
-            response.LookAt = toxinPursuitTarget.GlobalTransform.origin;
-            MoveTowards(response, toxinPursuitTarget.GlobalTransform.origin);
-            response.FireToxinAt = toxinPursuitTarget.GlobalTransform.origin;
-            toxinPursuitFrustration++;
-
-            if (toxinPursuitTarget.Dead)
+            if (toxinPursuitTarget.Value.Dead)
             {
                 toxinPursuitFrustration += FrustrationThreshold;
+            }
+            else
+            {
+                response.LookAt = toxinPursuitTarget.Value.GlobalTransform.origin;
+                MoveTowards(response, toxinPursuitTarget.Value.GlobalTransform.origin);
+                response.FireToxinAt = toxinPursuitTarget.Value.GlobalTransform.origin;
+                toxinPursuitFrustration++;
             }
         }
     }
