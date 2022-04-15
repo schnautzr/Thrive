@@ -48,8 +48,10 @@ public class OrganismAI
         // Set the next migration goal, even though this might get overwritten
         if (migrationLocation == null || SquaredDistanceFromMe(migrationLocation.Value) < 100.0f)
         {
-            WanderToNewPosition(response, random, data);
+            SetNewRandomMovementDirection(random);
         }
+
+        WanderToNewPosition(response, random, data);
 
         // If there is an existing strategy, try sticking witih it
         if (ExistingStrategy())
@@ -179,7 +181,6 @@ public class OrganismAI
 
     private void WanderToNewPosition(MulticellAIResponse response, Random random, MicrobeAICommonData data)
     {
-        SetNewRandomMovementDirection(random);
         response.LookAt = migrationLocation;
         MoveTowards(response, migrationLocation);
     }
