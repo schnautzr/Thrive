@@ -158,7 +158,8 @@ public class OrganismAI
         if (microbesToEat.Count > 0)
         {
             if (toxinPursuitFrustration <= 0.0f
-                && Colony.Master.Compounds.GetCompoundAmount(SimulationParameters.Instance.GetCompound("oxytoxy")) > 4.0f)
+                && Colony.Master.Compounds.GetCompoundAmount(SimulationParameters.Instance.GetCompound("oxytoxy"))
+                > 4.0f)
             {
                 toxinPursuitTarget.Value = microbesToEat.First();
             }
