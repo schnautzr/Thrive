@@ -496,8 +496,15 @@ public partial class Microbe
 
     public bool HasForwardPilus()
     {
-        return organelles.Any(organelle =>
-            organelle.HasComponent<PilusComponent>());
+        if (organelles == null)
+        {
+            return false;
+        }
+        else
+        {
+            return organelles.Any(organelle =>
+                organelle.HasComponent<PilusComponent>());
+        }
     }
 
     private void HandleCompoundAbsorbing(float delta)
