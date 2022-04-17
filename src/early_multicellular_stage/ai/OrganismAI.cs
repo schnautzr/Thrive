@@ -31,6 +31,12 @@ public class OrganismAI
     private float masticationFrustration = 0.0f;
 
     [JsonProperty]
+    private EntityReference<FloatingChunk> chunkPursuitTarget = new();
+
+    [JsonProperty]
+    private float chunkPursuitFrustration = 0.0f;
+
+    [JsonProperty]
     private float targetAngle;
 
     public OrganismAI(MicrobeColony colony)
@@ -98,6 +104,15 @@ public class OrganismAI
             toxinPursuitFrustration -= 5.0f;
         }
 
+        if (chunkPursuitTarget.Value != null)
+        {
+            retval = true;
+        }
+        else if (chunkPursuitFrustration > 0.0f)
+        {
+            chunkPursuitFrustration -= 5.0f;
+        }
+
         return retval;
     }
 
@@ -147,6 +162,12 @@ public class OrganismAI
                 toxinPursuitFrustration += 10;
             }
         }
+
+        if (chunkPursuitTarget.Value != null)
+        {
+            MoveTowards(response, chunkPursuitTarget.Value.GlobalTransform.origin);
+            chunkPursuitFrustration += 2.0f;
+        }
     }
 
     public void ChooseNewStrategy(MulticellAIResponse response, Random random, MicrobeAICommonData data)
@@ -171,11 +192,19 @@ public class OrganismAI
         }
         else
         {
-            var chunksToEat = ChunksNearMeWorthEating(data);
+            var chunksToEat = ChunksAtDistanceWorthEating(data, 1000.0f);
             if (chunksToEat.Count > 0)
             {
                 Turn(response, 0.5f);
                 MoveTowards(response, chunksToEat.First().GlobalTransform.origin);
+            }
+            else
+            {
+                chunksToEat = ChunksAtDistanceWorthEating(data, 9000.0f);
+                if (chunksToEat.Count > 0)
+                {
+                    chunkPursuitTarget.Value = chunksToEat.First();
+                }
             }
         }
     }
@@ -225,11 +254,11 @@ public class OrganismAI
         }
     }
 
-    private List<FloatingChunk> ChunksNearMeWorthEating(MicrobeAICommonData data)
+    private List<FloatingChunk> ChunksAtDistanceWorthEating(MicrobeAICommonData data, float distanceSquared)
     {
         return data.AllChunks.Where(chunk =>
             chunk.ContainedCompounds != null
-            && SquaredDistanceFromMe(chunk.Translation) < 1000.0f).ToList();
+            && SquaredDistanceFromMe(chunk.Translation) < distanceSquared).ToList();
     }
 
     private List<Microbe> MicrobesToEat(MicrobeAICommonData data)
