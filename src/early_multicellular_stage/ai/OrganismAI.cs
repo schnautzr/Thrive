@@ -235,9 +235,8 @@ public class OrganismAI
     private List<Microbe> MicrobesToEat(MicrobeAICommonData data)
     {
         return data.AllMicrobes.Where(microbe =>
-        microbe.Species != Colony.Master.Species
-        && !microbe.Dead
-        && SquaredDistanceFromMe(microbe.GlobalTransform.origin) < 1500.0f).ToList();
+            microbe.Species != Colony.Master.Species && !microbe.Dead
+            && SquaredDistanceFromMe(microbe.GlobalTransform.origin) < 1500.0f).ToList();
     }
 
     private float SquaredDistanceFromMe(Vector3 target)
