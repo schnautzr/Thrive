@@ -165,8 +165,15 @@ public class OrganismAI
 
         if (chunkPursuitTarget.Value != null)
         {
-            MoveTowards(response, chunkPursuitTarget.Value.GlobalTransform.origin);
-            chunkPursuitFrustration += 2.0f;
+            if (SquaredDistanceFromMe(chunkPursuitTarget.Value.GlobalTransform.origin) < 1000.0f)
+            {
+                chunkPursuitTarget.Value = null;
+            }
+            else
+            {
+                MoveTowards(response, chunkPursuitTarget.Value.GlobalTransform.origin);
+                chunkPursuitFrustration += 2.0f;
+            }
         }
     }
 
