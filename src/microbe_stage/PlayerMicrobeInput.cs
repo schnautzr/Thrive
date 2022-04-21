@@ -54,11 +54,31 @@ public class PlayerMicrobeInput : NodeWithInput
                 return;
             }
 
+            // DEFAULT MOVEMENT
             var movement = new Vector3(leftRightMovement, 0, forwardMovement);
-
             stage.Player.MovementDirection = autoMove ? new Vector3(0, 0, -1) : movement.Normalized();
-
             stage.Player.LookAtPoint = stage.Camera.CursorWorldPos;
+
+            // MOVEMENT WITH KEYED ROTATION
+            /*
+            var movement = new Vector3(0, 0, forwardMovement);
+            stage.Player.MovementDirection = autoMove ? new Vector3(0, 0, -1) : movement.Normalized();
+            var orientationVector = stage.Player.LookAtPoint - stage.Player.Translation;
+            var rotation = Math.Atan2(- orientationVector.z, orientationVector.x);
+            rotation = ((rotation - 0.05f * leftRightMovement + Math.PI) % MathUtils.FULL_CIRCLE) - Math.PI;
+            orientationVector = new Vector3((float) Math.Cos(rotation), 0, (float) - Math.Sin(rotation));
+            stage.Player.LookAtPoint = stage.Player.Translation + orientationVector * 1000;
+            */
+
+            // MOVEMENT RELATIVE TO SCREEN
+            /*
+            var movement = new Vector3(0, 0, - Math.Max(Math.Abs(leftRightMovement), Math.Abs(forwardMovement)));
+            stage.Player.MovementDirection = autoMove ? new Vector3(0, 0, -1) : movement.Normalized();
+            if (Math.Abs(forwardMovement) + Math.Abs(leftRightMovement) > epsilon)
+            {
+                stage.Player.LookAtPoint = stage.Player.Translation + 1000 * (new Vector3(leftRightMovement, 0, forwardMovement));
+            }
+            */
         }
     }
 
