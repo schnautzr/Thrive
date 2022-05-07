@@ -562,7 +562,8 @@ public partial class Microbe
         float currentHealth = Hitpoints / MaxHitpoints;
 
         MaxHitpoints = CellTypeProperties.MembraneType.Hitpoints +
-            (CellTypeProperties.MembraneRigidity * Constants.MEMBRANE_RIGIDITY_HITPOINTS_MODIFIER);
+            (CellTypeProperties.MembraneRigidity * Constants.MEMBRANE_RIGIDITY_HITPOINTS_MODIFIER) +
+            HexCount;
 
         Hitpoints = MaxHitpoints * currentHealth;
     }
