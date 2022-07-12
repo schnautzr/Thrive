@@ -92,6 +92,7 @@ public static class SaveHelper
     /// <param name="state">The current game state to make the save with</param>
     public static void Save(string name, MicrobeStage state)
     {
+        GD.Print("MAX SPAWED ENTITIES: " + Settings.Instance.MaxSpawnedEntities.Value);
         InternalSaveHelper(SaveInformation.SaveType.Manual, MainGameState.MicrobeStage, save =>
         {
             save.SavedProperties = state.CurrentGame;
