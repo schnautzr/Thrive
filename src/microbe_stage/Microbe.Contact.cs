@@ -798,101 +798,6 @@ public partial class Microbe
             }
         }
 
-        // Queues either 1 corpse chunk or a factor of the hexes
-        int chunksToSpawn = 0;
-
-        var droppedCorpseChunks = new HashSet<FloatingChunk>(chunksToSpawn);
-
-        var chunkScene = SpawnHelpers.LoadChunkScene();
-
-        // An enumerator to step through all available organelles in a random order when making chunks
-        using var organellesAvailableEnumerator = organelles.OrderBy(_ => random.Next()).GetEnumerator();
-
-        // The default model for chunks is the cytoplasm model in case there isn't a model left in the species
-        var defaultChunkScene = SimulationParameters.Instance
-                .GetOrganelleType(Constants.DEFAULT_CHUNK_MODEL_NAME).LoadedCorpseChunkScene ??
-            throw new Exception("No default chunk scene");
-
-        for (int i = 0; i < chunksToSpawn; ++i)
-        {
-            // Amount of compound in one chunk
-            float amount = HexCount / Constants.CORPSE_CHUNK_AMOUNT_DIVISOR;
-
-            var positionAdded = new Vector3(random.Next(-2.0f, 2.0f), 0,
-                random.Next(-2.0f, 2.0f));
-
-            var chunkType = new ChunkConfiguration
-            {
-                ChunkScale = 1.0f,
-                Dissolves = true,
-                Mass = 1.0f,
-                Radius = 1.0f,
-                Size = 3.0f,
-                VentAmount = 0.1f,
-
-                // Add compounds
-                Compounds = new Dictionary<Compound, ChunkConfiguration.ChunkCompound>(),
-            };
-
-            // They were added in order already so looping through this other thing is fine
-            foreach (var entry in compoundsToRelease)
-            {
-                var compoundValue = new ChunkConfiguration.ChunkCompound
-                {
-                    // Randomize compound amount a bit so things "rot away"
-                    Amount = (entry.Value / (random.Next(amount / 3.0f, amount) *
-                        Constants.CHUNK_ENGULF_COMPOUND_DIVISOR)) * Constants.CORPSE_COMPOUND_COMPENSATION,
-                };
-
-                chunkType.Compounds[entry.Key] = compoundValue;
-            }
-
-            chunkType.Meshes = new List<ChunkConfiguration.ChunkScene>();
-
-            var sceneToUse = new ChunkConfiguration.ChunkScene
-            {
-                LoadedScene = defaultChunkScene,
-            };
-
-            // Will only loop if there are still organelles available
-            while (organellesAvailableEnumerator.MoveNext() && organellesAvailableEnumerator.Current != null)
-            {
-                if (!string.IsNullOrEmpty(organellesAvailableEnumerator.Current.Definition.CorpseChunkScene))
-                {
-                    sceneToUse.LoadedScene =
-                        organellesAvailableEnumerator.Current.Definition.LoadedCorpseChunkScene;
-                }
-                else if (!string.IsNullOrEmpty(organellesAvailableEnumerator.Current.Definition.DisplayScene))
-                {
-                    sceneToUse.LoadedScene = organellesAvailableEnumerator.Current.Definition.LoadedScene;
-                    sceneToUse.SceneModelPath =
-                        organellesAvailableEnumerator.Current.Definition.DisplaySceneModelPath;
-                }
-                else
-                {
-                    continue;
-                }
-
-                if (sceneToUse.LoadedScene != null)
-                    break;
-            }
-
-            if (sceneToUse.LoadedScene == null)
-                throw new Exception("loaded scene is null");
-
-            chunkType.Meshes.Add(sceneToUse);
-
-            // Finally spawn a chunk with the settings
-            var chunk = SpawnHelpers.SpawnChunk(chunkType, Translation + positionAdded, GetStageAsParent(),
-                chunkScene, random);
-            droppedCorpseChunks.Add(chunk);
-
-            // Add to the spawn system to make these chunks limit possible number of entities
-            SpawnSystem.AddEntityToTrack(chunk);
-
-            ModLoader.ModInterface.TriggerOnChunkSpawned(chunk, false);
-        }
-
         // Subtract population
         if (!IsPlayerMicrobe && !Species.PlayerSpecies)
         {
@@ -921,7 +826,7 @@ public partial class Microbe
         CollisionLayer = 0;
         CollisionMask = 0;
 
-        return droppedCorpseChunks;
+        return new HashSet<FloatingChunk>(0);
     }
 
     private Microbe? GetColonyMemberWithShapeOwner(uint ownerID, MicrobeColony colony)
