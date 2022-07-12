@@ -355,6 +355,7 @@ public abstract class StageBase<TPlayer> : NodeWithInput, IStage, IGodotEarlyNod
         }
 
         GD.Print(CurrentGame!.GameWorld.WorldSettings);
+        GD.Print(Settings.Instance.MaxSpawnedEntities);
 
         pauseMenu.GameProperties = CurrentGame ?? throw new InvalidOperationException("current game is not set");
 
