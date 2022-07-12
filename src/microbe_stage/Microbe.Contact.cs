@@ -799,7 +799,7 @@ public partial class Microbe
         }
 
         // Queues either 1 corpse chunk or a factor of the hexes
-        int chunksToSpawn = Math.Max(1, HexCount / Constants.CORPSE_CHUNK_DIVISOR);
+        int chunksToSpawn = 0;
 
         var droppedCorpseChunks = new HashSet<FloatingChunk>(chunksToSpawn);
 
