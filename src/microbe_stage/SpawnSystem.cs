@@ -11,6 +11,11 @@ using Nito.Collections;
 public class SpawnSystem
 {
     /// <summary>
+    ///   Estimate count of existing spawned entities, cached to make delayed spawns cheaper
+    /// </summary>
+    public static int EstimateEntityCount;
+
+    /// <summary>
     ///   Sets how often the spawn system runs and checks things
     /// </summary>
     [JsonProperty]
@@ -46,11 +51,6 @@ public class SpawnSystem
     private Deque<QueuedSpawn> queuedSpawns = new();
 
     /// <summary>
-    ///   Estimate count of existing spawned entities, cached to make delayed spawns cheaper
-    /// </summary>
-    private int estimateEntityCount;
-
-    /// <summary>
     ///   Estimate count of existing spawn entities within the current spawn radius of the player;
     ///   Used to prevent a "spawn belt" of densely spawned entities when player doesn't move.
     /// </summary>
@@ -59,6 +59,7 @@ public class SpawnSystem
 
     public SpawnSystem(Node root)
     {
+        EstimateEntityCount = 0;
         worldRoot = root;
         spawnTypes = new ShuffleBag<Spawner>(random);
     }
@@ -102,6 +103,7 @@ public class SpawnSystem
     /// </summary>
     public void Init()
     {
+        EstimateEntityCount = 0;
         Clear();
     }
 
@@ -184,11 +186,11 @@ public class SpawnSystem
         {
             elapsed -= interval;
 
-            estimateEntityCount = DespawnEntities(playerPosition);
+            EstimateEntityCount = DespawnEntities(playerPosition);
 
             spawnTypes.RemoveAll(entity => entity.DestroyQueued);
 
-            SpawnEntities(playerPosition, ref spawnsLeftThisFrame, estimateEntityCount);
+            SpawnEntities(playerPosition, ref spawnsLeftThisFrame, EstimateEntityCount);
         }
         else if (despawnElapsed > Constants.DESPAWN_INTERVAL)
         {
@@ -210,7 +212,7 @@ public class SpawnSystem
 
             bool finished = false;
 
-            while (estimateEntityCount < Settings.Instance.MaxSpawnedEntities.Value &&
+            while (EstimateEntityCount < Settings.Instance.MaxSpawnedEntities.Value &&
                    spawnsLeftThisFrame > 0)
             {
                 if (!enumerator.MoveNext())
@@ -234,7 +236,7 @@ public class SpawnSystem
                 // Next was spawned
                 ProcessSpawnedEntity(enumerator.Current, spawn.SpawnType);
 
-                ++estimateEntityCount;
+                ++EstimateEntityCount;
                 --spawnsLeftThisFrame;
                 ++spawned;
             }
@@ -367,7 +369,7 @@ public class SpawnSystem
             return spawns;
         }
 
-        if (spawnType is CompoundCloudSpawner || estimateEntityCount < Settings.Instance.MaxSpawnedEntities.Value)
+        if (spawnType is CompoundCloudSpawner || EstimateEntityCount < Settings.Instance.MaxSpawnedEntities.Value)
         {
             var enumerable = spawnType.Spawn(worldRoot, location);
 
@@ -391,7 +393,7 @@ public class SpawnSystem
 
                 ProcessSpawnedEntity(spawner.Current, spawnType);
                 ++spawns;
-                ++estimateEntityCount;
+                ++EstimateEntityCount;
                 --spawnsLeftThisFrame;
             }
 
