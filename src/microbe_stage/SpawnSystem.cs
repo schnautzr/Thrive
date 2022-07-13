@@ -210,7 +210,7 @@ public class SpawnSystem
 
             bool finished = false;
 
-            while (estimateEntityCount < Settings.Instance.MaxSpawnedEntities &&
+            while (estimateEntityCount < Settings.Instance.MaxSpawnedEntities.Value &&
                    spawnsLeftThisFrame > 0)
             {
                 if (!enumerator.MoveNext())
@@ -264,7 +264,7 @@ public class SpawnSystem
     private void SpawnEntities(Vector3 playerPosition, ref int spawnsLeftThisFrame, int existing)
     {
         // If there are already too many entities, don't spawn more
-        if (existing >= Settings.Instance.MaxSpawnedEntities)
+        if (existing >= Settings.Instance.MaxSpawnedEntities.Value)
             return;
 
         var playerCoordinatePoint = new Tuple<int, int>(Mathf.RoundToInt(playerPosition.x /
@@ -367,7 +367,7 @@ public class SpawnSystem
             return spawns;
         }
 
-        if (spawnType is CompoundCloudSpawner || estimateEntityCount < Settings.Instance.MaxSpawnedEntities)
+        if (spawnType is CompoundCloudSpawner || estimateEntityCount < Settings.Instance.MaxSpawnedEntities.Value)
         {
             var enumerable = spawnType.Spawn(worldRoot, location);
 

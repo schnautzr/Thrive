@@ -880,6 +880,19 @@ public partial class Microbe
                 GameWorld.AlterSpeciesPopulationInCurrentPatch(Species,
                     Constants.CREATURE_REPRODUCE_POPULATION_GAIN, TranslationServer.Translate("REPRODUCED"));
             }
+
+            if (!IsMulticellular)
+            {
+                // Return the first cell to its normal, non duplicated cell arrangement and spawn a daughter cell
+                ResetOrganelleLayout();
+
+                Divide();
+            }
+            else
+            {
+                Divide();
+                enoughResourcesForBudding = false;
+            }
         }
     }
 
